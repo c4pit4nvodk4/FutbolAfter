@@ -3,290 +3,397 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="Image\ICON.png" rel="icon" />
   <title>Patagonia Sport After</title>
-    <link href="/ICON.png" rel="icon" />
   <style>
-    :root{ --width:1280px; --height:720px; }
-    body{ font-family: Arial, Helvetica, sans-serif; background:#f4f4f4; margin:0; padding:20px; box-sizing:border-box; }
-    h1{ text-align:center; margin:0 0 12px 0; }
-    /* Stage */
-    .stage-wrapper{ display:flex; justify-content:center; }
-    .stage{ width:var(--width); height:var(--height); background:#00cc00; position:relative; overflow:hidden; box-shadow:0 6px 20px rgba(0,0,0,.2); max-width:100%; }
-
+    :root{
+      --main-width: 1080px;
+      --main-height:720px;
+      --left-width:413px;
+      --gap:10px;
+      font-family: Arial, sans-serif;
+    }
+    body{margin:0;padding:20px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:20px;background:#f3f3f3}
+    /* Contenedor principal centrado */
+    .stage-wrap{max-width:100%;overflow:auto}
+    .stage{
+      width:var(--main-width);
+      height:var(--main-height);
+      background:#00cc00;
+      margin:0 auto;
+      position:relative;
+      box-shadow:0 6px 20px rgba(0,0,0,.2);
+      display:flex;
+      align-items:flex-end; /* items grouped at bottom area */
+      padding:12px;
+      box-sizing:border-box;
+    }
     /* Left column */
-    .left-col{ position:absolute; left:0; top:0; width:413px; padding:8px; box-sizing:border-box; display:flex; flex-direction:column; gap:8px; }
-    .card{ border-radius:6px; padding:6px; box-sizing:border-box; background:linear-gradient(180deg,#43a6b0 0%, #33295f 100%); color:#fff; text-align:center; }
+    .left-col{
+      width:var(--left-width);
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      position:absolute;
+      left:12px;
+      top:12px;
+    }
+    .box{
+      box-sizing:border-box;
+      border-radius:6px;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      font-weight:700;
+    }
+    .g1{width:413px;height:98px;padding:6px;background:linear-gradient(180deg,#43a6b0,#33295f);color:#fff;font-size:52px}
+    .g2{width:413px;height:301px;background:linear-gradient(180deg,#43a6b0,#33295f);position:relative}
+    .g3{width:413px;height:30px;background:linear-gradient(180deg,#43a6b0,#33295f);color:#fff;font-size:20px}
 
-    .time-card{ height:98px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:32px; }
-    .images-card{ height:301px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
-    .images-card img{ max-width:80%; max-height:80%; position:absolute; opacity:0; transition:opacity .10s ease; left:50%; transform:translateX(-50%); }
-    .images-card img.active{ opacity:1; }
+    /* Image slideshow inside g2 */
+    .slideshow{width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center}
+    .slide{
+      position:absolute;left:0;top:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 1s ease-in-out;
+    }
+    .slide img{max-width:80%;max-height:80%;object-fit:cover}
+    .slide.active{opacity:1}
 
-    .small-card{ height:35px; font-weight:700; font-size:24px; display:flex; align-items:center; justify-content:center; }
-    .small-marquee{ overflow:hidden; position:relative; height:20px; }
-    .small-marquee .marq-text{ position:absolute; white-space:nowrap; font-weight:700; font-size:15px; left:100%; }
-
-    /* Center-right area placeholder (visual spacing) */
-    .center-area{ position:absolute; left:433px; right:0; top:0; bottom:130px; display:flex; align-items:center; justify-content:center; }
-    .center-placeholder{ color:#fff; font-weight:700; font-size:28px; text-shadow:0 2px 6px rgba(0,0,0,.3); }
-
-    /* Barra Americana and Marquesina (bottom) */
-    .bottom-area{ position:absolute; left:0; right:0; bottom:0; display:flex; flex-direction:column; align-items:center; }
-    .barra-americana{ width:1280px; height:100px; display:flex; align-items:center; justify-content:center; background:linear-gradient(90deg,#43a6b0 0%, #33295f 100%); box-sizing:border-box; }
-    .barra-americana .text{ color:#fff; font-weight:700; font-family:Arial; font-size:28px; text-align:center; }
-    .marquesina{ width:1280px; height:30px; background:#fff; display:flex; align-items:center; overflow:hidden; box-sizing:border-box; }
-    .marquesina .marq-inner{ white-space:nowrap; display:inline-block; font-weight:700; font-family:Arial; color:#000; }
-
-    /* Editor */
-    .editor{ max-width:1280px; margin:18px auto 0; background:#fff; padding:12px; border-radius:8px; box-shadow:0 6px 12px rgba(0,0,0,.08); box-sizing:border-box; }
-    .editor-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    .editor .block{ border:1px solid #e6e6e6; padding:10px; border-radius:6px; }
-    .editor label{ display:block; font-weight:700; margin-bottom:6px; }
-    .editor input[type=text], .editor textarea{ width:100%; padding:8px; box-sizing:border-box; border:1px solid #ccc; border-radius:4px; }
-    .editor button{ margin-top:8px; padding:8px 10px; cursor:pointer; border-radius:4px; border:0; background:#007bff; color:#fff; font-weight:700; }
-
-    /* Responsive editor */
-    @media (max-width:980px){
-      .editor-grid{ grid-template-columns:1fr; }
-      .stage{ transform:scale(.8); transform-origin:top center; }
+    /* Barra Americana */
+    .barra-americana{
+      width:100%;height:100px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;margin-bottom:10px;background:linear-gradient(90deg,#43a6b0,#33295f);color:#fff;font-weight:700;font-size:36px
     }
 
-    @media (max-width:640px){ .stage{ transform:scale(.6);} }
+    /* Marquesina grande */
+    .marquesina{
+      width:100%;height:30px;background:#fff;display:flex;align-items:center;overflow:hidden;position:relative
+    }
+    .marquesina .text{
+      white-space:nowrap;font-family:Arial, sans-serif;font-weight:700;color:#000;font-size:18px;display:inline-block;position:absolute;right:-100%;
+      animation:marqBig linear infinite;
+    }
+    /* small left marquee (413x15) */
+    .left-marq{width:413px;height:30px;overflow:hidden;position:relative}
+    .left-marq .text{position:absolute;white-space:nowrap;font-weight:700;font-family:Arial;color:#fff;animation:marqSmall linear infinite}
+
+    @keyframes marqBig{
+      0%{transform:translateX(100%)}
+      100%{transform:translateX(-100%)}
+    }
+    @keyframes marqSmall{
+      0%{transform:translateX(100%)}
+      100%{transform:translateX(-100%)}
+    }
+
+    /* Editor area */
+    .editor{width:var(--main-width);max-width:100%;background:#fff;padding:12px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.12);box-sizing:border-box}
+    .editor .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+    .editor h3{margin:6px 0}
+    .editor label{font-weight:700;width:140px}
+    .editor input[type=text],.editor textarea{flex:1;padding:8px;border:1px solid #ddd;border-radius:4px;font-family:Arial}
+    .editor button{padding:8px 12px;border:none;border-radius:4px;cursor:pointer;background:#33295f;color:#fff;font-weight:700}
+    .small{width:120px}
+    .input-file{display:flex;gap:6px;align-items:center}
+
+    /* Responsive adjustments */
+    @media (max-width:1300px){
+      .stage{transform:scale(.9);transform-origin:top center}
+    }
+    @media (max-width:900px){
+      .stage{transform:scale(.75)}
+    }
+    @media (max-width:600px){
+      .stage{transform:scale(.6)}
+    }
   </style>
 </head>
 <body>
-  
-  <div class="stage-wrapper">
+  <h1 style="display:none">Patagonia Sport After</h1>
+
+  <div class="stage-wrap">
     <div class="stage" id="stage">
 
-      <!-- LEFT COLUMN -->
+      <!-- Left column with boxes -->
       <div class="left-col">
-        <div class="card time-card" id="timeDisplay">00:00:00</div>
-        <div class="card images-card" id="imagesCard">
-          <!-- Images will be added here -->
+        <div class="box g1" id="clock">00:00:00</div>
+
+        <div class="box g2">
+          <div class="slideshow" id="slideshow">
+            <!-- slides injected by JS -->
+            <div class="slide active"><img src="" alt="" id="emptyImg" style="display:none"></div>
+          </div>
         </div>
-        <div class="card small-card" id="avsB">A VS B</div>
-        <div class="card small-card" id="lugar">LUGAR ESTADIO</div>
-        <div class="card small-card" id="fecha">Fecha de Hoy</div>
-        <div class="card small-card small-marquee">
-          <div class="marq-text" id="leftMarquee">Somos el canal Patagonia Sport, Siguenos a traves de nuestras redes sociales, Instagram, Facebook, tiktok y Twitch y ve nuestras ultimas noticias, nuevas transmisiones y todo el contenido de nuestras transmisiones pasadas, Patagonia Sport el canal que apoya al deporte regional</div>
+
+        <div class="box g3" id="a_vs_b">A VS B</div>
+        <div class="box g3" id="lugar">LUGAR ESTADIO</div>
+        <div class="box g3" id="fecha">Fecha de Hoy</div>
+
+        <div class="box g3 left-marq">
+          <div class="text" id="leftMarqText">Somos Patagonia Sport, el canal que impulsa y apoya el deporte regional.Síguenos a través de nuestras redes sociales —Instagram, Facebook, TikTok y Twitch— para mantenerte al día con nuestras últimas noticias, nuevas transmisiones y todo el contenido de nuestros eventos anteriores.En Patagonia Sport encontrarás coberturas en vivo, resúmenes, entrevistas, momentos destacados y mucho más.¡Únete a nuestra comunidad deportiva y vive junto a nosotros la pasión del deporte regional!</div>
         </div>
+
       </div>
 
-      <!-- CENTER AREA (visual placeholder) -->
-      <div class="center-area">
-        <div class="center-placeholder"></div>
+      <!-- Right / Center area: Barra Americana and Marquesina at bottom -->
+      <!-- ahora posicionadas ABSOLUTAS dentro del stage para cubrir TODO el ancho (0 a 100%) -->
+      <div style="flex:1; margin-left:var(--left-width); display:flex; flex-direction:column; align-items:stretch; justify-content:flex-end; height:100%; position:relative;">
+        <!-- contenido central (puedes agregar otros elementos aquí si los necesitas) -->
       </div>
 
-      <!-- BOTTOM AREA -->
-      <div class="bottom-area">
-        <div class="barra-americana" id="barraAmericana"><div class="text" id="barraText">Texto Barra Americana</div></div>
-        <div class="marquesina" id="marquesinaWrap"><div style="padding-left:10px;" class="marq-inner" id="marqText">Texto marquesina de ejemplo que se desplazará de derecha a izquierda.</div></div>
+      <!-- Barra Americana: abosluta, ocupa todo el ancho de la zona 1280x720 del stage, altura 100px, ubicada justo encima de la marquesina -->
+      <div class="barra-americana" id="barraText" style="position:absolute; left:0; right:0; bottom:30px; height:100px; width:100%; box-sizing:border-box;">Barra Americana</div>
+
+      <!-- Marquesina grande: absoluta, ocupa todo el ancho y tiene 30px de alto -->
+      <div class="marquesina" style="position:absolute; left:0; right:0; bottom:0; height:30px; width:100%; box-sizing:border-box;">
+        <div class="text" id="marqText">Bienvenidos a Patagonia Sport</div>
       </div>
 
     </div>
   </div>
 
-  <!-- EDITOR -->
+  <!-- Editor area -->
   <div class="editor" id="editor">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <strong>Editor</strong>
-      <small style="opacity:.6;">Todos los cambios se verán en la vista previa superior</small>
+    <h3>Editor</h3>
+
+    <div class="row">
+      <label>Marquesina (Grande)</label>
+      <input type="text" id="marqInput" placeholder="Texto marquesina grande...">
+      <button onclick="applyMarq()">Agregar</button>
+      <div style="width:200px;text-align:right;font-size:12px;color:#666">Duración editable en código (animación)</div>
     </div>
 
-    <div class="editor-grid">
-      <div class="block">
-        <label>Mini Barra Americana (inferior) - Movimiento</label>
-        <input type="text" id="inputMarq" placeholder="Escribe la marquesina..." />
-        <button id="addMarq">Agregar</button>
-      </div>
-
-      <div class="block">
-        <label>Barra Americana (Superior) - texto</label>
-        <input type="text" id="inputBarra" placeholder="Escribe texto Barra Americana..." />
-        <button id="addBarra">Agregar</button>
-      </div>
-
-      <div class="block">
-        <label>Hora (se actualizará en tiempo real) — formato 24h</label>
-        <div style="display:flex; gap:8px; align-items:center;"><input type="text" id="timeFormat" placeholder="Opcional: 00:00:00"/><button id="forceTime">Agregar/Forzar</button></div>
-      </div>
-
-      <div class="block">
-        <label>Equipo A VS Equipo B (texto)</label>
-        <input type="text" id="inputAVSB" placeholder="A VS B..." />
-        <button id="addAVSB">Agregar</button>
-      </div>
-
-      <div class="block">
-        <label>LUGAR ESTADIO (texto)</label>
-        <input type="text" id="inputLugar" placeholder="Lugar / Estadio..." />
-        <button id="addLugar">Agregar</button>
-      </div>
-
-      <div class="block">
-        <label>Fecha de Hoy (texto) Esta Agregado Automaticamente</label>
-        <input type="text" id="inputFecha" placeholder="Fecha..." />
-        <button id="addFecha">Agregar</button>
-      </div>
-
-      <div class="block" style="grid-column:1 / -1;">
-        <label>Imágenes (imagen 1 - imagen 6). Selecciona una imagen y presiona el botón correspondiente para agregarla a la galería.</label>
-        <div style="display:flex; gap:6px; flex-wrap:wrap;">
-          <div style="flex:1 1 30%; min-width:140px;">
-            <input type="file" accept="image/*" id="img1" />
-            <button data-index="0" class="add-img">Agregar Imagen 1</button>
-          </div>
-          <div style="flex:1 1 30%; min-width:140px;">
-            <input type="file" accept="image/*" id="img2" />
-            <button data-index="1" class="add-img">Agregar Imagen 2</button>
-          </div>
-          <div style="flex:1 1 30%; min-width:140px;">
-            <input type="file" accept="image/*" id="img3" />
-            <button data-index="2" class="add-img">Agregar Imagen 3</button>
-          </div>
-          <div style="flex:1 1 30%; min-width:140px;">
-            <input type="file" accept="image/*" id="img4" />
-            <button data-index="3" class="add-img">Agregar Imagen 4</button>
-          </div>
-          <div style="flex:1 1 30%; min-width:140px;">
-            <input type="file" accept="image/*" id="img5" />
-            <button data-index="4" class="add-img">Agregar Imagen 5</button>
-          </div>
-          <div style="flex:1 1 30%; min-width:140px;">
-            <input type="file" accept="image/*" id="img6" />
-            <button data-index="5" class="add-img">Agregar Imagen 6</button>
-          </div>
-        </div>
-      </div>
-
+    <div class="row">
+      <label>Barra Americana</label>
+      <input type="text" id="barraInput" placeholder="Texto barra americana...">
+      <button onclick="applyBarra()">Agregar</button>
     </div>
+
+    <hr />
+    <h3>Imágenes (Sección Izquierda - slideshow)</h3>
+    <div style="font-size:13px;color:#444;margin-bottom:6px">Sube hasta 6 imágenes. Cada imagen tiene su botón para agregar.</div>
+
+    <div class="row input-file">
+      <label>Imagen 1</label>
+      <input type="file" id="img1" accept="image/*">
+      <button onclick="addImage(0)">Agregar</button>
+    </div>
+    <div class="row input-file">
+      <label>Imagen 2</label>
+      <input type="file" id="img2" accept="image/*">
+      <button onclick="addImage(1)">Agregar</button>
+    </div>
+    <div class="row input-file">
+      <label>Imagen 3</label>
+      <input type="file" id="img3" accept="image/*">
+      <button onclick="addImage(2)">Agregar</button>
+    </div>
+    <div class="row input-file">
+      <label>Imagen 4</label>
+      <input type="file" id="img4" accept="image/*">
+      <button onclick="addImage(3)">Agregar</button>
+    </div>
+    <div class="row input-file">
+      <label>Imagen 5</label>
+      <input type="file" id="img5" accept="image/*">
+      <button onclick="addImage(4)">Agregar</button>
+    </div>
+    <div class="row input-file">
+      <label>Imagen 6</label>
+      <input type="file" id="img6" accept="image/*">
+      <button onclick="addImage(5)">Agregar</button>
+    </div>
+
+    <hr />
+    <h3>Textos Izquierda</h3>
+    <div class="row">
+      <label>A VS B</label>
+      <input type="text" id="avsbInput" placeholder="Equipo A - Equipo B">
+      <button onclick="applyAVSB()">Agregar</button>
+    </div>
+    <div class="row">
+      <label>LUGAR ESTADIO</label>
+      <input type="text" id="lugarInput" placeholder="Nombre del estadio / ciudad">
+      <button onclick="applyLugar()">Agregar</button>
+    </div>
+    <div class="row">
+      <label>Fecha de Hoy</label>
+      <input type="text" id="fechaInput" placeholder="Ej: 3 de Diciembre, 2025">
+      <button onclick="applyFecha()">Agregar</button>
+    </div>
+
+    <hr />
+    <div class="row" style="align-items:flex-start">
+      <div style="flex:1">
+        <div style="font-weight:700;margin-bottom:6px">Marquesina Izquierda (413x15)</div>
+        <textarea id="leftMarqInput" rows="2" style="width:100%;box-sizing:border-box" placeholder="Texto para la marquesina izquierda..."></textarea>
+        <div style="display:flex;gap:8px;margin-top:8px"><button onclick="applyLeftMarq()">Agregar</button><div style="color:#666;font-size:12px">Somos Patagonia Sport, el canal que impulsa y apoya el deporte regional.Síguenos a través de nuestras redes sociales —Instagram, Facebook, TikTok y Twitch— para mantenerte al día con nuestras últimas noticias, nuevas transmisiones y todo el contenido de nuestros eventos anteriores.En Patagonia Sport encontrarás coberturas en vivo, resúmenes, entrevistas, momentos destacados y mucho más.¡Únete a nuestra comunidad deportiva y vive junto a nosotros la pasión del deporte regional!</div></div>
+      </div>
+    </div>
+
+    <hr />
+    <div style="font-size:12px;color:#666">Nota: la duración de la visualización de cada imagen es 5 segundos con 1 segundo de transición. La animación de la marquesina grande y pequeña calcula su duración automáticamente según el largo del texto. El editor está diseñado para adaptarse a la pantalla donde se agregue.</div>
+
   </div>
 
   <script>
-    // Time
-    const timeDisplay = document.getElementById('timeDisplay');
-    function updateTime(){
-      const d = new Date();
-      const hh = String(d.getHours()).padStart(2,'0');
-      const mm = String(d.getMinutes()).padStart(2,'0');
-      const ss = String(d.getSeconds()).padStart(2,'0');
-      timeDisplay.textContent = `${hh}:${mm}:${ss}`;
+    // Clock
+    function updateClock(){
+      const el = document.getElementById('clock');
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2,'0');
+      const mm = String(now.getMinutes()).padStart(2,'0');
+      const ss = String(now.getSeconds()).padStart(2,'0');
+      el.textContent = `${hh}:${mm}:${ss}`;
     }
-    setInterval(updateTime, 1000);
-    updateTime();
+    setInterval(updateClock,1000);
+    updateClock();
 
-    // Marquesina (inferior)
-    const marqText = document.getElementById('marqText');
-    const inputMarq = document.getElementById('inputMarq');
-    document.getElementById('addMarq').addEventListener('click', ()=>{
-      marqText.textContent = inputMarq.value || ' ';
-      restartMarqAnim();
-    });
-
+    // Marquesina grande
+    function applyMarq(){
+      const txt = document.getElementById('marqInput').value.trim();
+      const el = document.getElementById('marqText');
+      if(txt.length===0) return;
+      el.textContent = txt;
+      // set animation duration based on text length and stage width
+      const stageWidth = document.getElementById('stage').offsetWidth || 1280;
+      const textWidth = measureTextWidth(txt, '18px Arial');
+      // speed px per sec (approx). We'll aim for 120 px/s
+      const speed = 10;
+      const duration = (stageWidth + textWidth) / speed;
+      el.style.animationDuration = duration + 's';
+    }
     // Barra Americana
-    const barraText = document.getElementById('barraText');
-    const inputBarra = document.getElementById('inputBarra');
-    document.getElementById('addBarra').addEventListener('click', ()=>{
-      barraText.textContent = inputBarra.value || '';
-    });
+    function applyBarra(){
+      const txt = document.getElementById('barraInput').value.trim();
+      if(txt.length===0) return;
+      document.getElementById('barraText').textContent = txt;
+    }
 
-    // A vs B, Lugar, Fecha
-    document.getElementById('addAVSB').addEventListener('click', ()=>{ document.getElementById('avsB').textContent = document.getElementById('inputAVSB').value || ''; });
-    document.getElementById('addLugar').addEventListener('click', ()=>{ document.getElementById('lugar').textContent = document.getElementById('inputLugar').value || ''; });
-    document.getElementById('addFecha').addEventListener('click', ()=>{ document.getElementById('fecha').textContent = document.getElementById('inputFecha').value || ''; });
+    // Left small marquee
+    function applyLeftMarq(){
+      const txt = document.getElementById('leftMarqInput').value.trim();
+      if(txt.length===0) return;
+      const el = document.getElementById('leftMarqText');
+      el.textContent = txt;
+      const containerWidth = 413; // fixed
+      const textWidth = measureTextWidth(txt, '12px Arial');
+      const speed = 100; // px/s
+      const duration = (containerWidth + textWidth) / speed;
+      el.style.animationDuration = duration + 's';
+    }
 
-    // Left small marquee animation (simple JS loop)
-    const leftMarq = document.getElementById('leftMarquee');
-    let leftPos = 0; let leftWidth = 0; let leftWrapWidth = 413;
-    function startLeftMarq(){
-      cancelAnimationFrame(leftMarq._raf || 0);
-      leftPos = leftWrapWidth;
-      leftWidth = leftMarq.offsetWidth;
-      function step(){
-        leftPos -= 1; // speed
-        if(leftPos < -leftWidth) leftPos = leftWrapWidth;
-        leftMarq.style.left = leftPos + 'px';
-        leftMarq._raf = requestAnimationFrame(step);
+    // Utility to measure text width
+    function measureTextWidth(text, font){
+      const canvas = measureTextWidth.canvas || (measureTextWidth.canvas = document.createElement('canvas'));
+      const ctx = canvas.getContext('2d');
+      ctx.font = font || '16px Arial';
+      return ctx.measureText(text).width;
+    }
+
+    // Left texts
+    function applyAVSB(){
+      const v = document.getElementById('avsbInput').value.trim();
+      if(!v) return;document.getElementById('a_vs_b').textContent = v;
+    }
+    function applyLugar(){
+      const v = document.getElementById('lugarInput').value.trim();
+      if(!v) return;document.getElementById('lugar').textContent = v;
+    }
+    function applyFecha(){
+      const v = document.getElementById('fechaInput').value.trim();
+      if(!v) return;document.getElementById('fecha').textContent = v;
+    }
+
+    // Slideshow logic (6 images max)
+    const slides = [];
+    let currentSlide = 0;
+    let slideTimer = null;
+    const displayTime = 5000; // 5s
+    const transitionTime = 1000; // 1s
+
+    function addImage(index){
+      const input = document.getElementById('img'+(index+1));
+      if(!input.files || !input.files[0]){
+        alert('Selecciona un archivo para Imagen ' + (index+1));
+        return;
       }
-      step();
-    }
-    startLeftMarq();
-
-    // Bottom marquesina using CSS animation (we'll recreate via JS to handle dynamic width)
-    const marqWrap = document.getElementById('marquesinaWrap');
-    let marqAnimId = null;
-    function restartMarqAnim(){
-      cancelAnimationFrame(marqAnimId);
-      const item = marqText;
-      let pos = marqWrap.clientWidth;
-      function step(){
-        pos -= 2; // speed
-        if(pos < -item.offsetWidth) pos = marqWrap.clientWidth;
-        item.style.transform = `translateX(${pos}px)`;
-        marqAnimId = requestAnimationFrame(step);
+      const f = input.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e){
+        const url = e.target.result;
+        slides[index] = url;
+        rebuildSlides();
       }
-      step();
-    }
-    // initialize
-    marqText.style.display = 'inline-block';
-    restartMarqAnim();
-
-    // Images carousel logic (6 possible images)
-    const imagesCard = document.getElementById('imagesCard');
-    const imageFiles = [null,null,null,null,null,null];
-    const imgElements = [];
-    let currentImg = -1;
-    function createImgElement(src){
-      const img = document.createElement('img'); img.src = src; return img;
-    }
-    function refreshImagesCard(){
-      imagesCard.innerHTML = '';
-      imgElements.length = 0;
-      imageFiles.forEach((src, i)=>{ if(src){ const img = createImgElement(src); img.dataset.index = i; imagesCard.appendChild(img); imgElements.push(img); } });
-      // start carousel
-      if(imgElements.length>0){ currentImg = -1; showNextImg(); }
-    }
-    function showNextImg(){
-      if(imgElements.length===0) return;
-      if(currentImg>=0) imgElements[currentImg].classList.remove('active');
-      currentImg = (currentImg + 1) % imgElements.length;
-      imgElements[currentImg].classList.add('active');
-      setTimeout(showNextImg, 3000);
+      reader.readAsDataURL(f);
     }
 
-    document.querySelectorAll('.add-img').forEach(btn =>{
-      btn.addEventListener('click', ()=>{
-        const idx = Number(btn.dataset.index);
-        const fileInput = document.getElementById('img'+(idx+1));
-        const f = fileInput.files[0];
-        if(!f) return alert('Por favor selecciona una imagen para Imagen ' + (idx+1));
-        const reader = new FileReader();
-        reader.onload = (e)=>{ imageFiles[idx] = e.target.result; refreshImagesCard(); };
-        reader.readAsDataURL(f);
-      });
+    function rebuildSlides(){
+      const container = document.getElementById('slideshow');
+      container.innerHTML = '';
+      for(let i=0;i<6;i++){
+        const div = document.createElement('div');
+        div.className = 'slide';
+        const img = document.createElement('img');
+        img.alt = 'Imagen '+(i+1);
+        if(slides[i]){img.src = slides[i];}
+        div.appendChild(img);
+        container.appendChild(div);
+      }
+      // ensure at least one active
+      const slideEls = container.querySelectorAll('.slide');
+      if(slideEls.length>0){
+        slideEls.forEach(s=>s.classList.remove('active'));
+        // find first with src
+        let first = -1;for(let i=0;i<slideEls.length;i++){const im=slideEls[i].querySelector('img'); if(im && im.src) {first=i;break;}}
+        if(first===-1){ // nothing
+          if(slideEls[0]) slideEls[0].classList.add('active');
+          clearInterval(slideTimer);
+          return;
+        }
+        currentSlide = first;
+        slideEls[currentSlide].classList.add('active');
+        startSlideshow();
+      }
+    }
+
+    function startSlideshow(){
+      clearInterval(slideTimer);
+      slideTimer = setInterval(()=>{
+        const container = document.getElementById('slideshow');
+        const slideEls = Array.from(container.querySelectorAll('.slide'));
+        if(slideEls.length===0) return;
+        // find next with src
+        let next = (currentSlide+1)%slideEls.length;
+        let safety=0;
+        while(safety<10 && (!slideEls[next].querySelector('img').src || slideEls[next].querySelector('img').src==='')){next=(next+1)%slideEls.length;safety++;}
+        // swap
+        slideEls[currentSlide].classList.remove('active');
+        slideEls[next].classList.add('active');
+        currentSlide = next;
+      }, displayTime + transitionTime);
+    }
+
+    // init empty slides placeholders
+    for(let i=0;i<6;i++) slides.push('');
+    rebuildSlides();
+
+    // set initial animations durations for marquees based on initial text
+    window.addEventListener('load',()=>{
+      applyMarq();
+      applyLeftMarq();
+      // set marquee animation default speeds
     });
 
-    // Small helper: allow forcing time text (but still keeps ticking)
-    document.getElementById('forceTime').addEventListener('click', ()=>{
-      const v = document.getElementById('timeFormat').value.trim();
-      if(v) timeDisplay.textContent = v;
-    });
+    // make editor responsive: ensure it fits screen (already responsive via css)
 
-    // Make sure marquee animations restart on resize
-    window.addEventListener('resize', ()=>{ restartMarqAnim(); startLeftMarq(); });
-
-    // Initial placeholders
-    document.getElementById('avsB').textContent = 'A VS B';
-    document.getElementById('lugar').textContent = 'LUGAR ESTADIO';
-    document.getElementById('fecha').textContent = (new Date()).toLocaleDateString();
+    // accessibility helpers: allow enter key in text inputs to apply
+    document.getElementById('marqInput').addEventListener('keydown',e=>{if(e.key==='Enter'){applyMarq();}})
+    document.getElementById('barraInput').addEventListener('keydown',e=>{if(e.key==='Enter'){applyBarra();}})
+    document.getElementById('avsbInput').addEventListener('keydown',e=>{if(e.key==='Enter'){applyAVSB();}})
+    document.getElementById('lugarInput').addEventListener('keydown',e=>{if(e.key==='Enter'){applyLugar();}})
+    document.getElementById('fechaInput').addEventListener('keydown',e=>{if(e.key==='Enter'){applyFecha();}})
 
   </script>
-  <!-- Enlace para enviar solo la sección 1280x720 -->
-  <div style="text-align:center; margin-top:20px;">
-    <a href="#" id="exportSectionLink" style="color:blue; text-decoration:underline; font-weight:bold;">Trabajo Echo Por Luis Salas 2025 - Para Canal Patagonia Sport</a>
-  </div>
-
-
 </body>
 </html>
